@@ -106,7 +106,6 @@ lvim.plugins = {
             height = 0.9,
             prompt_position = "bottom",
             mirror = false,  -- Mirror layout for two vertical columns
-            preview_height = 0.9
           },
           mappings = {
             ["n"] = {
