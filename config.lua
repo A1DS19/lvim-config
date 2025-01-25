@@ -93,7 +93,6 @@ lvim.plugins = {
     priority = 1000,
   },
   {
-    "nvim-telescope/telescope.nvim",
     lazy = false,
     priority = 1000,
     dependencies = { "nvim-lua/plenary.nvim" },
