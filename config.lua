@@ -1,15 +1,16 @@
--- Read the docs: https://www.lunarvim.org/docs/configuration
--- Example configs: https://github.com/LunarVim/starter.lvim
--- Video Tutorials: https://www.youtube.com/watch?v=sFA9kX-Ud_c&list=PLhoH5vyxr6QqGu0i7tt_XoVK9v-KvZ3m6
--- Forum: https://www.reddit.com/r/lunarvim/
--- Discord: https://discord.com/invite/Xb9B4Ny
-
+-- Basic Settings
 lvim.colorscheme = "jellybeans"
 lvim.transparent_window = false
 lvim.builtin["terminal"].active = false
 
+-- Plugins
 lvim.plugins = {
   { "lunarvim/colorschemes" },
+  -- Uncomment if you want to use nvim-web-devicons independently
+  -- {
+  --   "kyazdani42/nvim-web-devicons",
+  --   lazy = true,
+  -- },
   {
     "stevearc/dressing.nvim",
     config = function()
@@ -17,7 +18,7 @@ lvim.plugins = {
         input = { enabled = false },
       })
     end,
-   },
+  },
   {
     "nvim-neorg/neorg",
     ft = "norg",
@@ -34,7 +35,7 @@ lvim.plugins = {
   {
     "rafamadriz/friendly-snippets",
     lazy = false,
-    priority = 1001, -- optional but ensures it loads early
+    priority = 1001, -- Optional but ensures it loads early
   },
   {
     "windwp/nvim-autopairs",
@@ -44,16 +45,7 @@ lvim.plugins = {
       require("nvim-autopairs").setup({})
     end,
   },
-  {
-    "tamago324/lir.nvim",
-    lazy = false,
-    priority = 1000,
-    -- Optional config if you have special lir settings:
-    -- config = function()
-    --   require("lir").setup({})
-    -- end,
-  },
-
+  -- Removed lir.nvim
   {
     "L3MON4D3/LuaSnip",
     lazy = false,
@@ -62,7 +54,6 @@ lvim.plugins = {
     --   require("luasnip").setup({})
     -- end,
   },
-
   {
     "mfussenegger/nvim-dap",
     lazy = false,
@@ -71,7 +62,6 @@ lvim.plugins = {
     --   -- Your DAP configuration here
     -- end,
   },
-
   {
     "rcarriga/nvim-dap-ui",
     lazy = false,
@@ -92,37 +82,93 @@ lvim.plugins = {
       end
     end,
   },
-
   {
     "nvim-lua/plenary.nvim",
     lazy = false,
     priority = 1000,
   },
-
   {
     "b0o/schemastore.nvim",
     lazy = false,
     priority = 1000,
   },
-
   {
     "nvim-telescope/telescope.nvim",
     lazy = false,
     priority = 1000,
     dependencies = { "nvim-lua/plenary.nvim" },
     config = function()
-      require("telescope").setup({})
+      require("telescope").setup({
+        extensions = {
+          file_browser = {
+            theme = "dropdown",
+            hijack_netrw = true,
+            layout_config = {
+              width = 0.9,
+              height = 0.8,
+            },
+            mappings = {
+              ["n"] = {
+                ["<A-c>"] = require("telescope").extensions.file_browser.actions.create,
+                ["<S-CR>"] = require("telescope").extensions.file_browser.actions.create_from_prompt,
+                ["<A-r>"] = require("telescope").extensions.file_browser.actions.rename,
+                ["<A-m>"] = require("telescope").extensions.file_browser.actions.move,
+                ["<A-y>"] = require("telescope").extensions.file_browser.actions.copy,
+                ["<A-d>"] = require("telescope").extensions.file_browser.actions.remove,
+                ["<C-o>"] = require("telescope").extensions.file_browser.actions.open,
+                ["<C-g>"] = require("telescope").extensions.file_browser.actions.goto_parent_dir,
+                ["<C-e>"] = require("telescope").extensions.file_browser.actions.goto_home_dir,
+                ["<C-w>"] = require("telescope").extensions.file_browser.actions.goto_cwd,
+                ["<C-t>"] = require("telescope").extensions.file_browser.actions.change_cwd,
+                ["<C-f>"] = require("telescope").extensions.file_browser.actions.toggle_browser,
+                ["<C-h>"] = require("telescope").extensions.file_browser.actions.toggle_hidden,
+                ["<C-s>"] = require("telescope").extensions.file_browser.actions.toggle_all,
+                -- Removed invalid mappings
+                -- ["<Tab>"] = require("telescope").extensions.file_browser.actions.toggle_selection_next,
+                -- ["<S-Tab>"] = require("telescope").extensions.file_browser.actions.toggle_selection_prev,
+                ["<BS>"] = require("telescope").extensions.file_browser.actions.backspace,
+              },
+              ["i"] = {
+                ["<A-c>"] = require("telescope").extensions.file_browser.actions.create,
+                ["<S-CR>"] = require("telescope").extensions.file_browser.actions.create_from_prompt,
+                ["<A-r>"] = require("telescope").extensions.file_browser.actions.rename,
+                ["<A-m>"] = require("telescope").extensions.file_browser.actions.move,
+                ["<A-y>"] = require("telescope").extensions.file_browser.actions.copy,
+                ["<A-d>"] = require("telescope").extensions.file_browser.actions.remove,
+                ["<C-o>"] = require("telescope").extensions.file_browser.actions.open,
+                ["<C-g>"] = require("telescope").extensions.file_browser.actions.goto_parent_dir,
+                ["<C-e>"] = require("telescope").extensions.file_browser.actions.goto_home_dir,
+                ["<C-w>"] = require("telescope").extensions.file_browser.actions.goto_cwd,
+                ["<C-t>"] = require("telescope").extensions.file_browser.actions.change_cwd,
+                ["<C-f>"] = require("telescope").extensions.file_browser.actions.toggle_browser,
+                ["<C-h>"] = require("telescope").extensions.file_browser.actions.toggle_hidden,
+                ["<C-s>"] = require("telescope").extensions.file_browser.actions.toggle_all,
+                -- Removed invalid mappings
+                -- ["<Tab>"] = require("telescope").extensions.file_browser.actions.toggle_selection_next,
+                -- ["<S-Tab>"] = require("telescope").extensions.file_browser.actions.toggle_selection_prev,
+                ["<BS>"] = require("telescope").extensions.file_browser.actions.backspace,
+              },
+            },
+          },
+        },
+      })
     end,
   },
-
   {
     "nvim-telescope/telescope-fzf-native.nvim",
     lazy = false,
     priority = 1000,
-    build = "make", -- important if you need to compile the C code
+    build = "make", -- Important if you need to compile the C code
     dependencies = { "nvim-telescope/telescope.nvim" },
     config = function()
       require("telescope").load_extension("fzf")
+    end,
+  },
+  {
+    "nvim-telescope/telescope-file-browser.nvim",
+    dependencies = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" },
+    config = function()
+      require("telescope").load_extension("file_browser")
     end,
   },
   {
@@ -130,40 +176,32 @@ lvim.plugins = {
     event = "BufReadPre", -- Load on the BufReadPre event
     config = function()
       require("persistence").setup({
-        -- Options here, or leave empty to use defaults
-        dir = vim.fn.stdpath("data") .. "/sessions/", -- directory where session files are saved
-        options = { "buffers", "curdir", "tabpages", "winsize" }, -- session options
-        require("persistence").setup({
-          require("persistence").setup({
-  dir = vim.fn.stdpath("data") .. "/sessions/",
-  options = { "buffers", "curdir", "tabpages", "winsize" },
-  -- Enable autosave and autoload
-  autoload = true, -- automatically load the session for the cwd
-  autosave = {
-    enabled = true,
-    events = { "BufLeave", "VimLeavePre" }, -- autosave on these events
-    last_session = true, -- always autosave the last session
-  },
-  telescope = {
-    enabled = true,
-    open_cmd = "Telescope",
-  },
-})
-
-})
-
+        dir = vim.fn.stdpath("data") .. "/sessions/", -- Directory where session files are saved
+        options = { "buffers", "curdir", "tabpages", "winsize" }, -- Session options
+        autoload = true, -- Automatically load the session for the current working directory
+        autosave = {
+          enabled = true,
+          events = { "BufLeave", "VimLeavePre" }, -- Autosave on these events
+          last_session = true, -- Always autosave the last session
+        },
+        telescope = {
+          enabled = true,
+          open_cmd = "Telescope", -- Telescope command prefix
+        },
       })
     end,
-    dependencies = { "nvim-lua/plenary.nvim" }, -- plenar.nvim is required
+    dependencies = { "nvim-lua/plenary.nvim" }, -- plenary.nvim is required
   },
 }
 
+-- Key Mappings
 lvim.keys.normal_mode["<leader>ff"] = "<cmd>Telescope find_files<CR>"
 lvim.keys.normal_mode["<leader>fg"] = "<cmd>Telescope live_grep<CR>"
 lvim.keys.normal_mode["<leader>fb"] = "<cmd>Telescope buffers<CR>"
 lvim.keys.normal_mode["<leader>fh"] = "<cmd>Telescope help_tags<CR>"
 
-lvim.keys.normal_mode["<leader>e"] = ":edit .<CR>"
+-- Set <leader>e to Telescope File Browser
+lvim.keys.normal_mode["<leader>e"] = "<cmd>Telescope file_browser path=%:p:h select_buffer=true<CR>"
 
 -- Session Management Keybindings
 -- Using the <leader> s prefix for session commands
@@ -176,5 +214,35 @@ lvim.keys.normal_mode["<leader>sn"] = "<cmd>lua require('persistence').stop()<CR
 -- List and switch between sessions using Telescope
 lvim.keys.normal_mode["<leader>sl"] = "<cmd>lua require('persistence').load({ last = true })<CR>"
 -- Save session with prompt for a name
-lvim.keys.normal_mode["<leader>sa"] = "<cmd>lua require('persistence').save()<CR>"
+lvim.keys.normal_mode["<leader>sa"] = "<cmd>lua save_session_with_name()<CR>"
+
+-- Custom function to prompt for a session name
+function save_session_with_name()
+  local session_name = vim.fn.input("Session Name: ")
+  if session_name ~= "" then
+    require("persistence").save(session_name)
+  else
+    print("Session name cannot be empty!")
+  end
+end
+
+-- Enhanced Key Mappings with which-key
+lvim.builtin.which_key.mappings["f"] = {
+  name = "Find",
+  f = { "<cmd>Telescope find_files<CR>", "Find Files" },
+  g = { "<cmd>Telescope live_grep<CR>", "Live Grep" },
+  b = { "<cmd>Telescope buffers<CR>", "Buffers" },
+  h = { "<cmd>Telescope help_tags<CR>", "Help Tags" },
+}
+
+lvim.builtin.which_key.mappings["e"] = { "<cmd>Telescope file_browser<CR>", "File Browser" }
+
+lvim.builtin.which_key.mappings["s"] = {
+  name = "Session",
+  s = { "<cmd>lua require('persistence').save()<CR>", "Save Session" },
+  r = { "<cmd>lua require('persistence').load()<CR>", "Restore Session" },
+  n = { "<cmd>lua require('persistence').stop()<CR>", "Stop Persistence" },
+  l = { "<cmd>lua require('persistence').load({ last = true })<CR>", "Restore Last Session" },
+  a = { "<cmd>lua save_session_with_name()<CR>", "Save Session with Name" }, -- Custom function
+}
 
