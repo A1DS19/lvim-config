@@ -131,7 +131,7 @@ lvim.plugins = {
     })
 
     -- Load the file_browser extension
-    -- pcall(require("telescope").load_extension, "file_browser")
+    pcall(require("telescope").load_extension, "file_browser")
   end,
 },
 

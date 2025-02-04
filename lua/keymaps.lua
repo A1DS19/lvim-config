@@ -60,11 +60,11 @@ end
 lvim.builtin.nvimtree.setup.on_attach = on_attach
 lvim.keys.normal_mode["<C-n>"] = ":NvimTreeToggle<CR>"
 
-vim.api.nvim_create_autocmd("VimEnter", {
-  callback = function()
-    require("nvim-tree.api").tree.open()
-  end,
-})
+-- vim.api.nvim_create_autocmd("VimEnter", {
+--   callback = function()
+--     require("nvim-tree.api").tree.open()
+--   end,
+-- })
 
 -- vim.api.nvim_create_autocmd("BufEnter", {
 --   callback = function()
