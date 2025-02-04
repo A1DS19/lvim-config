@@ -131,13 +131,13 @@ lvim.plugins = {
     })
 
     -- Load the file_browser extension
-    pcall(require("telescope").load_extension, "file_browser")
+    -- pcall(require("telescope").load_extension, "file_browser")
   end,
 },
 
 {
   "nvim-telescope/telescope-file-browser.nvim",
-  lazy = false,
+  lazy = true,
   priority = 1000,
   dependencies = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" },
 },
@@ -169,5 +169,9 @@ lvim.plugins = {
       })
     end,
     dependencies = { "nvim-lua/plenary.nvim" },
+  },
+  {
+    "kdheepak/lazygit.nvim",
+    cmd = "LazyGit",
   },
 }
