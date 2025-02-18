@@ -48,3 +48,15 @@ lvim.builtin.terminal.open_mapping = "<leader>tt"
 -- Neotree mappings
 lvim.keys.normal_mode["<C-t>"] = ":Neotree show<CR>"
 lvim.keys.normal_mode["<C-c>"] = ":Neotree close<CR>"
+-- vim.api.nvim_create_autocmd("BufEnter", {
+--   callback = function()
+--     -- Get the list of current windows.
+--     if #vim.api.nvim_list_wins() == 1 then
+--       -- Check if the current buffer's filetype is neo-tree.
+--       if vim.bo.filetype == "neo-tree" then
+--         vim.cmd("quit")
+--       end
+--     end
+--   end,
+-- })
+
