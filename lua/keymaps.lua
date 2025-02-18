@@ -45,32 +45,6 @@ lvim.keys.normal_mode["<leader>lg"] = "<cmd>LazyGit<CR>"
 lvim.builtin.terminal.active = true
 lvim.builtin.terminal.open_mapping = "<leader>tt"
 
--- File explorer
-lvim.builtin.nvimtree.setup.view.side = "left"
-lvim.builtin.nvimtree.setup.view.width = 30
-
-local function on_attach(bufnr)
-  local api = require("nvim-tree.api")
-  local opts = { noremap = true, silent = true, nowait = true, buffer = bufnr }
-  vim.keymap.set("n", "<CR>", api.node.open.edit, opts)
-  vim.keymap.set("n", "v", api.node.open.vertical, opts)
-  vim.keymap.set("n", "h", api.node.open.horizontal, opts)
-end
-
-lvim.builtin.nvimtree.setup.on_attach = on_attach
-lvim.keys.normal_mode["<C-n>"] = ":NvimTreeToggle<CR>"
-
--- vim.api.nvim_create_autocmd("VimEnter", {
---   callback = function()
---     require("nvim-tree.api").tree.open()
---   end,
--- })
-
--- vim.api.nvim_create_autocmd("BufEnter", {
---   callback = function()
---     if #vim.api.nvim_list_wins() == 1 and vim.bo.filetype == "NvimTree" then
---       vim.cmd("quit")
---     end
---   end,
--- })
-
+-- Neotree mappings
+lvim.keys.normal_mode["<C-t>"] = ":Neotree show<CR>"
+lvim.keys.normal_mode["<C-c>"] = ":Neotree close<CR>"

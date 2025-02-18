@@ -174,4 +174,47 @@ lvim.plugins = {
     "kdheepak/lazygit.nvim",
     cmd = "LazyGit",
   },
+  {
+  "nvim-neo-tree/neo-tree.nvim",
+  branch = "v3.x",
+  dependencies = {
+    "nvim-lua/plenary.nvim",
+    "nvim-tree/nvim-web-devicons", -- for file icons
+    "MunifTanjim/nui.nvim",
+  },
+  config = function()
+    require("neo-tree").setup({
+      default_component_configs = {
+        icon = {
+          folder_closed = "", -- Icon for closed folders
+          folder_open = "",   -- Icon for open folders
+          folder_empty = "",  -- Icon for empty folders
+          default = "",       -- Default icon for files
+        },
+      },
+      window = {
+        position = "left",      -- Position the file explorer on the left side
+        width = 33,             -- Set the width of the file explorer
+        mappings = {
+          ["<CR>"] = "open",    -- Open files/folders with Enter
+          ["a"] = "add",        -- Create a new file/folder
+          ["d"] = "delete",     -- Delete a file/folder
+          ["r"] = "rename",     -- Rename a file/folder
+          ["c"] = "copy_to_clipboard", -- Copy a file/folder
+          ["x"] = "cut_to_clipboard",  -- Cut a file/folder
+          ["p"] = "paste_from_clipboard", -- Paste a file/folder
+          ["q"] = "close_window", -- Close the file explorer
+          ["v"] = "open_vsplit" -- Split vertical
+        },
+      },
+      filesystem = {
+        filtered_items = {
+          visible = true,       -- Show hidden files by default
+          hide_dotfiles = false, -- Do not hide dotfiles
+          hide_gitignored = false, -- Do not hide gitignored files
+        },
+      },
+    })
+  end,
+}
 }
