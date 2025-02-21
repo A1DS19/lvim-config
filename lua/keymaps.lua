@@ -19,21 +19,21 @@ lvim.keys.normal_mode["<leader>sa"] = "<cmd>lua save_session_with_name()<CR>"
 
 -- Custom function to save session with a name
 function save_session_with_name()
-  local session_name = vim.fn.input("Session Name: ")
-  if session_name ~= "" then
-    require("persistence").save(session_name)
-  else
-    print("Session name cannot be empty!")
-  end
+	local session_name = vim.fn.input("Session Name: ")
+	if session_name ~= "" then
+		require("persistence").save(session_name)
+	else
+		print("Session name cannot be empty!")
+	end
 end
 
 -- Enhanced Key Mappings with which-key
 lvim.builtin.which_key.mappings["f"] = {
-  name = "Find",
-  f = { "<cmd>Telescope find_files<CR>", "Find Files" },
-  g = { "<cmd>Telescope live_grep<CR>", "Live Grep" },
-  b = { "<cmd>Telescope buffers<CR>", "Buffers" },
-  h = { "<cmd>Telescope help_tags<CR>", "Help Tags" },
+	name = "Find",
+	f = { "<cmd>Telescope find_files<CR>", "Find Files" },
+	g = { "<cmd>Telescope live_grep<CR>", "Live Grep" },
+	b = { "<cmd>Telescope buffers<CR>", "Buffers" },
+	h = { "<cmd>Telescope help_tags<CR>", "Help Tags" },
 }
 
 lvim.builtin.which_key.mappings["e"] = { "<cmd>Telescope file_browser<CR>", "File Browser" }
@@ -60,3 +60,11 @@ lvim.keys.normal_mode["<C-c>"] = ":Neotree close<CR>"
 --   end,
 -- })
 
+-- format on save
+vim.api.nvim_create_autocmd("BufWritePre", {
+	pattern = { "*.rs", "*.c", "*.cpp", "*.cs", "*.ts", "*.tsx", "*.js", "*.jsx", "*.py", "*.lua" },
+	callback = function()
+		vim.lsp.buf.format({ async = false })
+		print("File formatted and saved!")
+	end,
+})

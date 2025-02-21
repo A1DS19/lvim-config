@@ -1,3 +1,9 @@
 lvim.colorscheme = "jellybeans"
 lvim.transparent_window = false
 lvim.builtin["terminal"].active = false
+vim.opt.cmdheight = 2 -- more space in the neovim command line for displaying messages
+vim.opt.guifont = "hack:h17" -- the font used in graphical neovim applications
+vim.opt.shiftwidth = 2 -- the number of spaces inserted for each indentation
+vim.opt.tabstop = 2 -- insert 2 spaces for a tab
+vim.opt.relativenumber = true -- relative line numbers
+vim.opt.wrap = true -- wrap lines
