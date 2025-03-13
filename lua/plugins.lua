@@ -234,6 +234,9 @@ lvim.plugins = {
 					"tsserver", -- TypeScript/JavaScript
 					"pyright", -- Python
 					"eslint", -- ESLint for React/JS/TS
+					"html", -- HTML
+					"cssls", -- CSS
+					"tailwindcss", -- Tailwind CSS
 				},
 			})
 		end,
@@ -293,6 +296,43 @@ lvim.plugins = {
 			lspconfig.tsserver.setup({ capabilities = capabilities })
 			lspconfig.pyright.setup({ capabilities = capabilities })
 			lspconfig.eslint.setup({ capabilities = capabilities })
+
+			-- Add HTML, CSS, and Tailwind CSS LSPs
+			lspconfig.html.setup({
+				capabilities = capabilities,
+				filetypes = { "html", "htmldjango" }, -- Add filetypes if needed
+			})
+			lspconfig.cssls.setup({
+				capabilities = capabilities,
+				filetypes = { "css", "scss", "less" }, -- Add filetypes if needed
+			})
+			lspconfig.tailwindcss.setup({
+				capabilities = capabilities,
+				filetypes = { "html", "javascript", "javascriptreact", "typescript", "typescriptreact" },
+			})
+		end,
+	},
+	{
+		"windwp/nvim-ts-autotag",
+		config = function()
+			require("nvim-ts-autotag").setup()
+		end,
+	},
+	{
+		"nvim-treesitter/nvim-treesitter",
+		build = ":TSUpdate",
+		config = function()
+			require("nvim-treesitter.configs").setup({
+				ensure_installed = { "html", "css", "javascript", "typescript" },
+				highlight = { enable = true },
+				autotag = { enable = true }, -- Enable autotagging
+			})
+		end,
+	},
+	{
+		"tailwindlabs/tailwindcss-intellisense",
+		config = function()
+			-- Optional: Add custom configuration if needed
 		end,
 	},
 }

@@ -60,6 +60,10 @@ lvim.keys.normal_mode["<C-c>"] = ":Neotree close<CR>"
 --   end,
 -- })
 
+-- Go to Definition and Go to Implementation
+lvim.keys.normal_mode["gd"] = "<cmd>lua vim.lsp.buf.definition()<CR>"
+lvim.keys.normal_mode["gI"] = "<cmd>lua vim.lsp.buf.implementation()<CR>"
+
 -- format on save
 vim.api.nvim_create_autocmd("BufWritePre", {
 	pattern = { "*.rs", "*.c", "*.cpp", "*.cs", "*.ts", "*.tsx", "*.js", "*.jsx", "*.py", "*.lua" },
