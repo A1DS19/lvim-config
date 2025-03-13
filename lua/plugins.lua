@@ -12,11 +12,15 @@ lvim.plugins = {
 		config = true,
 	},
 	{
-		"nanotech/jellybeans.vim",
+		"Mofiqul/dracula.nvim",
 		lazy = false,
 		priority = 1000,
 		config = function()
-			vim.cmd("colorscheme jellybeans")
+			require("dracula").setup({
+				transparent_bg = false, -- Enable/disable transparent background
+				italic_comments = true, -- Enable italic comments
+			})
+			vim.cmd("colorscheme dracula") -- Set the colorscheme to Dracula
 		end,
 	},
 	{
@@ -325,7 +329,6 @@ lvim.plugins = {
 			require("nvim-treesitter.configs").setup({
 				ensure_installed = { "html", "css", "javascript", "typescript" },
 				highlight = { enable = true },
-				autotag = { enable = true }, -- Enable autotagging
 			})
 		end,
 	},
