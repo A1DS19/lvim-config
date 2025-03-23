@@ -327,7 +327,7 @@ lvim.plugins = {
 		build = ":TSUpdate",
 		config = function()
 			require("nvim-treesitter.configs").setup({
-				ensure_installed = { "html", "css", "javascript", "typescript" },
+				ensure_installed = { "html", "css", "javascript", "typescript", "sql" },
 				highlight = { enable = true },
 			})
 		end,
