@@ -103,7 +103,7 @@ lvim.plugins = {
 				extensions = {
 					file_browser = {
 						theme = "dropdown",
-						hijack_netrw = true,
+						hijack_netrw = false,
 						layout_strategy = "horizontal", -- Use vertical layout
 						layout_config = {
 							width = 0.8,
@@ -179,48 +179,88 @@ lvim.plugins = {
 		cmd = "LazyGit",
 	},
 	{
-		"nvim-neo-tree/neo-tree.nvim",
-		branch = "v3.x",
-		dependencies = {
-			"nvim-lua/plenary.nvim",
-			"nvim-tree/nvim-web-devicons", -- for file icons
-			"MunifTanjim/nui.nvim",
-		},
+		"nvim-tree/nvim-tree.lua",
+		version = "*", -- Use latest stable release
+		dependencies = { "nvim-tree/nvim-web-devicons" },
 		config = function()
-			require("neo-tree").setup({
-				default_component_configs = {
-					icon = {
-						folder_closed = "", -- Icon for closed folders
-						folder_open = "", -- Icon for open folders
-						folder_empty = "", -- Icon for empty folders
-						default = "", -- Default icon for files
-					},
+			require("nvim-tree").setup({
+				-- Disable netrw at start
+				disable_netrw = true,
+				hijack_netrw = true,
+
+				-- Don’t update CWD or focus file automatically
+				update_cwd = false, -- Prevent :cd on BufEnter
+				update_focused_file = {
+					enable = false, -- Don’t focus the file in the tree
+					update_cwd = false, -- Don’t change root on focus
 				},
-				window = {
-					position = "left", -- Position the file explorer on the left side
-					width = 33, -- Set the width of the file explorer
-					mappings = {
-						["<CR>"] = "open", -- Open files/folders with Enter
-						["a"] = "add", -- Create a new file/folder
-						["d"] = "delete", -- Delete a file/folder
-						["r"] = "rename", -- Rename a file/folder
-						["c"] = "copy_to_clipboard", -- Copy a file/folder
-						["x"] = "cut_to_clipboard", -- Cut a file/folder
-						["p"] = "paste_from_clipboard", -- Paste a file/folder
-						["q"] = "close_window", -- Close the file explorer
-						["v"] = "open_vsplit", -- Split vertical
-					},
+
+				-- View options
+				view = {
+					width = 30,
+					side = "left",
+					number = false,
+					relativenumber = false,
 				},
-				filesystem = {
-					filtered_items = {
-						visible = true, -- Show hidden files by default
-						hide_dotfiles = false, -- Do not hide dotfiles
-						hide_gitignored = false, -- Do not hide gitignored files
+
+				-- Filesystem filters
+				filters = {
+					dotfiles = false,
+					custom = {},
+				},
+
+				-- Actions on open
+				actions = {
+					open_file = {
+						quit_on_open = false, -- Don’t close tree on file open
 					},
 				},
 			})
 		end,
 	},
+	-- {
+	-- 	"nvim-neo-tree/neo-tree.nvim",
+	-- 	branch = "v3.x",
+	-- 	dependencies = {
+	-- 		"nvim-lua/plenary.nvim",
+	-- 		"nvim-tree/nvim-web-devicons", -- for file icons
+	-- 		"MunifTanjim/nui.nvim",
+	-- 	},
+	-- 	config = function()
+	-- 		require("neo-tree").setup({
+	-- 			default_component_configs = {
+	-- 				icon = {
+	-- 					folder_closed = "", -- Icon for closed folders
+	-- 					folder_open = "", -- Icon for open folders
+	-- 					folder_empty = "", -- Icon for empty folders
+	-- 					default = "", -- Default icon for files
+	-- 				},
+	-- 			},
+	-- 			window = {
+	-- 				position = "left", -- Position the file explorer on the left side
+	-- 				width = 33, -- Set the width of the file explorer
+	-- 				mappings = {
+	-- 					["<CR>"] = "open", -- Open files/folders with Enter
+	-- 					["a"] = "add", -- Create a new file/folder
+	-- 					["d"] = "delete", -- Delete a file/folder
+	-- 					["r"] = "rename", -- Rename a file/folder
+	-- 					["c"] = "copy_to_clipboard", -- Copy a file/folder
+	-- 					["x"] = "cut_to_clipboard", -- Cut a file/folder
+	-- 					["p"] = "paste_from_clipboard", -- Paste a file/folder
+	-- 					["q"] = "close_window", -- Close the file explorer
+	-- 					["v"] = "open_vsplit", -- Split vertical
+	-- 				},
+	-- 			},
+	-- 			filesystem = {
+	-- 				filtered_items = {
+	-- 					visible = true, -- Show hidden files by default
+	-- 					hide_dotfiles = false, -- Do not hide dotfiles
+	-- 					hide_gitignored = false, -- Do not hide gitignored files
+	-- 				},
+	-- 			},
+	-- 		})
+	-- 	end,
+	-- },
 	{
 		"williamboman/mason.nvim",
 		config = function()

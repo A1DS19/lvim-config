@@ -46,8 +46,7 @@ lvim.builtin.terminal.active = true
 lvim.builtin.terminal.open_mapping = "<leader>tt"
 
 -- Neotree mappings
-lvim.keys.normal_mode["<C-t>"] = ":Neotree show<CR>"
-lvim.keys.normal_mode["<C-c>"] = ":Neotree close<CR>"
+lvim.keys.normal_mode["<C-t>"] = ":NvimTreeToggle<CR>"
 -- vim.api.nvim_create_autocmd("BufEnter", {
 --   callback = function()
 --     -- Get the list of current windows.
