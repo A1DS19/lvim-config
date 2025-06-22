@@ -215,6 +215,22 @@ lvim.plugins = {
 						quit_on_open = false, -- Don’t close tree on file open
 					},
 				},
+
+				-- Add custom keymaps when the tree buffer is attached
+				on_attach = function(bufnr)
+					local api = require("nvim-tree.api")
+					-- Load default mappings
+					api.config.mappings.default_on_attach(bufnr) -- :contentReference[oaicite:0]{index=0}
+
+					-- Map 'v' to open file in a vertical split
+					vim.keymap.set("n", "v", api.node.open.vertical, {
+						desc = "nvim-tree: Open in vertical split",
+						buffer = bufnr,
+						noremap = true,
+						silent = true,
+						nowait = true,
+					}) -- :contentReference[oaicite:1]{index=1}
+				end,
 			})
 		end,
 	},
