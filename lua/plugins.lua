@@ -86,7 +86,6 @@ lvim.plugins = {
     config = function()
       local actions = require("telescope.actions")
       local fb_actions = require("telescope").extensions.file_browser.actions
-
       require("telescope").setup({
         defaults = {
           mappings = {
@@ -104,12 +103,12 @@ lvim.plugins = {
           file_browser = {
             theme = "dropdown",
             hijack_netrw = false,
-            layout_strategy = "horizontal", -- Use vertical layout
+            layout_strategy = "horizontal",
             layout_config = {
               width = 0.8,
               height = 0.9,
               prompt_position = "bottom",
-              mirror = false, -- Mirror layout for two vertical columns
+              mirror = false,
             },
             mappings = {
               ["n"] = {
@@ -133,19 +132,16 @@ lvim.plugins = {
           },
         },
       })
-
       -- Load the file_browser extension
       pcall(require("telescope").load_extension, "file_browser")
     end,
   },
-
   {
     "nvim-telescope/telescope-file-browser.nvim",
     lazy = true,
     priority = 1000,
     dependencies = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" },
   },
-
   {
     "nvim-telescope/telescope-fzf-native.nvim",
     lazy = false,
@@ -176,111 +172,106 @@ lvim.plugins = {
   },
   {
     "kdheepak/lazygit.nvim",
-    cmd = "LazyGit",
+    lazy = false,
+    cmd = {
+      "LazyGit",
+      "LazyGitConfig",
+      "LazyGitCurrentFile",
+      "LazyGitFilter",
+      "LazyGitFilterCurrentFile",
+    },
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+    },
+    keys = {
+      {
+        "<leader>lg",
+        function()
+          -- Add error checking
+          if vim.fn.executable('git') == 0 then
+            vim.notify('Git is not installed or not in PATH', vim.log.levels.ERROR)
+            return
+          end
+          if vim.fn.executable('lazygit') == 0 then
+            vim.notify('LazyGit is not installed or not in PATH', vim.log.levels.ERROR)
+            return
+          end
+          vim.cmd('LazyGit')
+        end,
+        desc = "Open LazyGit"
+      },
+      {
+        "<leader>gg",
+        function()
+          -- Add error checking
+          if vim.fn.executable('git') == 0 then
+            vim.notify('Git is not installed or not in PATH', vim.log.levels.ERROR)
+            return
+          end
+          if vim.fn.executable('lazygit') == 0 then
+            vim.notify('LazyGit is not installed or not in PATH', vim.log.levels.ERROR)
+            return
+          end
+          vim.cmd('LazyGit')
+        end,
+        desc = "Open LazyGit"
+      },
+    },
+    config = function()
+      vim.g.lazygit_floating_window_winblend = 0
+      vim.g.lazygit_floating_window_scaling_factor = 0.9
+      vim.g.lazygit_floating_window_border_chars = { '╭', '─', '╮', '│', '╯', '─', '╰', '│' }
+      vim.g.lazygit_floating_window_use_plenary = 1
+      vim.g.lazygit_use_neovim_remote = 1
+    end,
   },
   {
     "nvim-tree/nvim-tree.lua",
-    version = "*", -- Use latest stable release
+    version = "*",
     dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
       require("nvim-tree").setup({
-        -- Disable netrw at start
         disable_netrw = true,
         hijack_netrw = true,
-
-        -- Don’t update CWD or focus file automatically
-        update_cwd = false,   -- Prevent :cd on BufEnter
+        update_cwd = false,
         update_focused_file = {
-          enable = false,     -- Don’t focus the file in the tree
-          update_cwd = false, -- Don’t change root on focus
+          enable = false,
+          update_cwd = false,
         },
-
-        -- View options
         view = {
           width = 35,
           side = "left",
           number = false,
           relativenumber = false,
         },
-
-        -- Filesystem filters
         filters = {
           dotfiles = false,
+          git_clean = false,
+          git_ignored = false,
           custom = {},
         },
-
         git = {
           ignore = false,
         },
-
-        -- Actions on open
         actions = {
           open_file = {
-            quit_on_open = false, -- Don’t close tree on file open
+            quit_on_open = false,
           },
         },
-
-        -- Add custom keymaps when the tree buffer is attached
         on_attach = function(bufnr)
           local api = require("nvim-tree.api")
-          -- Load default mappings
-          api.config.mappings.default_on_attach(bufnr) -- :contentReference[oaicite:0]{index=0}
-
-          -- Map 'v' to open file in a vertical split
+          api.config.mappings.default_on_attach(bufnr)
           vim.keymap.set("n", "v", api.node.open.vertical, {
             desc = "nvim-tree: Open in vertical split",
             buffer = bufnr,
             noremap = true,
             silent = true,
             nowait = true,
-          }) -- :contentReference[oaicite:1]{index=1}
+          })
         end,
       })
     end,
   },
-  -- {
-  -- 	"nvim-neo-tree/neo-tree.nvim",
-  -- 	branch = "v3.x",
-  -- 	dependencies = {
-  -- 		"nvim-lua/plenary.nvim",
-  -- 		"nvim-tree/nvim-web-devicons", -- for file icons
-  -- 		"MunifTanjim/nui.nvim",
-  -- 	},
-  -- 	config = function()
-  -- 		require("neo-tree").setup({
-  -- 			default_component_configs = {
-  -- 				icon = {
-  -- 					folder_closed = "", -- Icon for closed folders
-  -- 					folder_open = "", -- Icon for open folders
-  -- 					folder_empty = "", -- Icon for empty folders
-  -- 					default = "", -- Default icon for files
-  -- 				},
-  -- 			},
-  -- 			window = {
-  -- 				position = "left", -- Position the file explorer on the left side
-  -- 				width = 33, -- Set the width of the file explorer
-  -- 				mappings = {
-  -- 					["<CR>"] = "open", -- Open files/folders with Enter
-  -- 					["a"] = "add", -- Create a new file/folder
-  -- 					["d"] = "delete", -- Delete a file/folder
-  -- 					["r"] = "rename", -- Rename a file/folder
-  -- 					["c"] = "copy_to_clipboard", -- Copy a file/folder
-  -- 					["x"] = "cut_to_clipboard", -- Cut a file/folder
-  -- 					["p"] = "paste_from_clipboard", -- Paste a file/folder
-  -- 					["q"] = "close_window", -- Close the file explorer
-  -- 					["v"] = "open_vsplit", -- Split vertical
-  -- 				},
-  -- 			},
-  -- 			filesystem = {
-  -- 				filtered_items = {
-  -- 					visible = true, -- Show hidden files by default
-  -- 					hide_dotfiles = false, -- Do not hide dotfiles
-  -- 					hide_gitignored = false, -- Do not hide gitignored files
-  -- 				},
-  -- 			},
-  -- 		})
-  -- 	end,
-  -- },
   {
     "williamboman/mason.nvim",
     config = function()
@@ -292,15 +283,23 @@ lvim.plugins = {
     config = function()
       require("mason-lspconfig").setup({
         ensure_installed = {
-          "rust_analyzer", -- Rust
-          "clangd",        -- C/C++
-          "csharp_ls",     -- C#
-          "tsserver",      -- TypeScript/JavaScript
-          "pyright",       -- Python
-          "eslint",        -- ESLint for React/JS/TS
-          "html",          -- HTML
-          "cssls",         -- CSS
-          "tailwindcss",   -- Tailwind CSS
+          "rust_analyzer",
+          "clangd",
+          "omnisharp",
+          "tsserver",
+          "pyright",
+          "eslint",
+          "html",
+          "cssls",
+          "tailwindcss",
+          "jsonls",
+          "yamlls",
+          "lua_ls",
+          "bashls",
+          "dockerls",
+          "marksman",
+          "taplo",
+          "cmake",
         },
       })
     end,
@@ -311,7 +310,6 @@ lvim.plugins = {
       local null_ls = require("null-ls")
       null_ls.setup({
         sources = {
-          -- Prettier (your existing)
           null_ls.builtins.formatting.prettier.with({
             filetypes = {
               "javascript",
@@ -323,13 +321,11 @@ lvim.plugins = {
               "css",
               "scss",
               "markdown",
+              "yaml",
             },
           }),
-
-          -- ESLint fixes (includes import-sort if your ESLint rule is enabled)
           null_ls.builtins.formatting.eslint_d.with({
             condition = function(utils)
-              -- only run if you have an ESLint config in the project
               return utils.root_has_file({
                 ".eslintrc.js",
                 ".eslintrc.cjs",
@@ -339,13 +335,21 @@ lvim.plugins = {
             end,
           }),
           null_ls.builtins.code_actions.eslint_d,
-
-          -- (keep your diagnostics if you like them)
+          null_ls.builtins.formatting.csharpier,
+          null_ls.builtins.formatting.black,
+          null_ls.builtins.formatting.isort,
+          null_ls.builtins.formatting.rustfmt,
+          null_ls.builtins.formatting.clang_format,
+          null_ls.builtins.formatting.shfmt,
+          null_ls.builtins.formatting.yamlfmt,
+          null_ls.builtins.formatting.cmake_format,
           null_ls.builtins.diagnostics.eslint.with({
             condition = function(utils)
               return utils.root_has_file({ ".eslintrc.js", ".eslintrc.cjs", ".eslintrc.json" })
             end,
           }),
+          null_ls.builtins.diagnostics.yamllint,
+          null_ls.builtins.diagnostics.cmake_lint,
         },
       })
     end,
@@ -357,22 +361,32 @@ lvim.plugins = {
       local capabilities = require("cmp_nvim_lsp").default_capabilities()
       local util = require("lspconfig.util")
 
-      -- Configure language servers
       lspconfig.rust_analyzer.setup({ capabilities = capabilities })
       lspconfig.clangd.setup({ capabilities = capabilities })
-      lspconfig.csharp_ls.setup({ capabilities = capabilities })
+
+      lspconfig.omnisharp.setup({
+        capabilities = capabilities,
+        cmd = { "omnisharp", "--languageserver", "--hostPID", tostring(vim.fn.getpid()) },
+        enable_editorconfig_support = true,
+        enable_ms_build_load_projects_on_demand = false,
+        enable_roslyn_analyzers = false,
+        organize_imports_on_format = false,
+        enable_import_completion = false,
+        sdk_include_prereleases = true,
+        analyze_open_documents_only = false,
+      })
+
       lspconfig.tsserver.setup({ capabilities = capabilities })
       lspconfig.pyright.setup({ capabilities = capabilities })
       lspconfig.eslint.setup({ capabilities = capabilities })
 
-      -- Add HTML, CSS, and Tailwind CSS LSPs
       lspconfig.html.setup({
         capabilities = capabilities,
-        filetypes = { "html", "htmldjango" }, -- Add filetypes if needed
+        filetypes = { "html", "htmldjango" },
       })
       lspconfig.cssls.setup({
         capabilities = capabilities,
-        filetypes = { "css", "scss", "less" }, -- Add filetypes if needed
+        filetypes = { "css", "scss", "less" },
       })
       lspconfig.tailwindcss.setup({
         capabilities = capabilities,
@@ -400,6 +414,54 @@ lvim.plugins = {
           },
         },
       })
+
+      lspconfig.jsonls.setup({
+        capabilities = capabilities,
+        settings = {
+          json = {
+            schemas = require("schemastore").json.schemas(),
+            validate = { enable = true },
+          },
+        },
+      })
+
+      lspconfig.yamlls.setup({
+        capabilities = capabilities,
+        settings = {
+          yaml = {
+            schemaStore = {
+              enable = false,
+              url = "",
+            },
+            schemas = require("schemastore").yaml.schemas(),
+          },
+        },
+      })
+
+      lspconfig.lua_ls.setup({
+        capabilities = capabilities,
+        settings = {
+          Lua = {
+            runtime = { version = "LuaJIT" },
+            diagnostics = { globals = { "vim" } },
+            workspace = { library = vim.api.nvim_get_runtime_file("", true) },
+            telemetry = { enable = false },
+          },
+        },
+      })
+
+      lspconfig.bashls.setup({ capabilities = capabilities })
+      lspconfig.dockerls.setup({ capabilities = capabilities })
+      lspconfig.marksman.setup({ capabilities = capabilities })
+      lspconfig.taplo.setup({ capabilities = capabilities })
+
+      lspconfig.cmake.setup({
+        capabilities = capabilities,
+        filetypes = { "cmake" },
+        init_options = {
+          buildDirectory = "build",
+        },
+      })
     end,
   },
   {
@@ -413,9 +475,75 @@ lvim.plugins = {
     build = ":TSUpdate",
     config = function()
       require("nvim-treesitter.configs").setup({
-        ensure_installed = { "html", "css", "javascript", "typescript", "sql" },
-        highlight = { enable = true },
+        ensure_installed = {
+          "html",
+          "css",
+          "javascript",
+          "typescript",
+          "tsx",
+          "json",
+          "yaml",
+          "toml",
+          "c_sharp",
+          "c",
+          "cpp",
+          "rust",
+          "python",
+          "lua",
+          "bash",
+          "markdown",
+          "markdown_inline",
+          "dockerfile",
+          "cmake",
+          "make",
+          "vim",
+          "vimdoc",
+          "sql",
+          "regex",
+        },
+        highlight = {
+          enable = true,
+          additional_vim_regex_highlighting = false,
+        },
+        indent = { enable = true },
+        incremental_selection = {
+          enable = true,
+          keymaps = {
+            init_selection = "gnn",
+            node_incremental = "grn",
+            scope_incremental = "grc",
+            node_decremental = "grm",
+          },
+        },
       })
+    end,
+  },
+  {
+    "Civitasv/cmake-tools.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    config = function()
+      require("cmake-tools").setup({
+        cmake_command = "cmake",
+        cmake_build_directory = "build",
+        cmake_build_directory_prefix = "",
+        cmake_generate_options = { "-DCMAKE_EXPORT_COMPILE_COMMANDS=1" },
+        cmake_build_options = {},
+        cmake_console_position = "belowright",
+        cmake_console_size = 10,
+        cmake_show_console = "always",
+        cmake_dap_configuration = {
+          name = "cpp",
+          type = "codelldb",
+          request = "launch",
+        },
+      })
+    end,
+  },
+  {
+    "LhKipp/nvim-nu",
+    ft = "nu",
+    config = function()
+      require("nu").setup()
     end,
   },
 }
