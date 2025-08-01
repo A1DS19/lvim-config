@@ -17,10 +17,10 @@ lvim.plugins = {
     priority = 1000,
     config = function()
       require("dracula").setup({
-        transparent_bg = false,      -- Enable/disable transparent background
-        italic_comments = true,      -- Enable italic comments
+        transparent_bg = false,
+        italic_comments = true,
       })
-      vim.cmd("colorscheme dracula") -- Set the colorscheme to Dracula
+      vim.cmd("colorscheme dracula")
     end,
   },
   {
@@ -132,7 +132,6 @@ lvim.plugins = {
           },
         },
       })
-      -- Load the file_browser extension
       pcall(require("telescope").load_extension, "file_browser")
     end,
   },
@@ -170,6 +169,26 @@ lvim.plugins = {
     end,
     dependencies = { "nvim-lua/plenary.nvim" },
   },
+
+  ------------------------------------------------------------------
+  -- GIT INTEGRATION
+  ------------------------------------------------------------------
+  {
+    "kdheepak/lazygit.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    -- Lazy-load on command or keymap for faster startup
+    cmd = "LazyGit",
+    keys = { { "<leader>gg" } },
+    config = function()
+      -- Keymaps are all you need. The defaults are great.
+      -- vim.keymap.set('n', '<leader>wg', '<cmd>LazyGit<cr>', { desc = 'LazyGit' })
+      vim.keymap.set('n', '<leader>gg', '<cmd>LazyGit<cr>', { desc = 'LazyGit' })
+    end,
+  },
+
+  ------------------------------------------------------------------
+  -- FILE EXPLORER
+  ------------------------------------------------------------------
   {
     "nvim-tree/nvim-tree.lua",
     version = "*",
@@ -217,6 +236,10 @@ lvim.plugins = {
       })
     end,
   },
+
+  ------------------------------------------------------------------
+  -- LSP, LINTING, AND FORMATTING
+  ------------------------------------------------------------------
   {
     "williamboman/mason.nvim",
     config = function()
@@ -228,23 +251,9 @@ lvim.plugins = {
     config = function()
       require("mason-lspconfig").setup({
         ensure_installed = {
-          "rust_analyzer",
-          "clangd",
-          "omnisharp",
-          "tsserver",
-          "pyright",
-          "eslint",
-          "html",
-          "cssls",
-          "tailwindcss",
-          "jsonls",
-          "yamlls",
-          "lua_ls",
-          "bashls",
-          "dockerls",
-          "marksman",
-          "taplo",
-          "cmake",
+          "rust_analyzer", "clangd", "csharp_ls", "tsserver", "pyright",
+          "eslint", "html", "cssls", "tailwindcss", "jsonls", "yamlls",
+          "lua_ls", "bashls", "dockerls", "marksman", "taplo", "cmake",
         },
       })
     end,
@@ -257,25 +266,14 @@ lvim.plugins = {
         sources = {
           null_ls.builtins.formatting.prettier.with({
             filetypes = {
-              "javascript",
-              "typescript",
-              "javascriptreact",
-              "typescriptreact",
-              "json",
-              "html",
-              "css",
-              "scss",
-              "markdown",
-              "yaml",
+              "javascript", "typescript", "javascriptreact", "typescriptreact",
+              "json", "html", "css", "scss", "markdown", "yaml",
             },
           }),
           null_ls.builtins.formatting.eslint_d.with({
             condition = function(utils)
               return utils.root_has_file({
-                ".eslintrc.js",
-                ".eslintrc.cjs",
-                ".eslintrc.json",
-                "package.json",
+                ".eslintrc.js", ".eslintrc.cjs", ".eslintrc.json", "package.json",
               })
             end,
           }),
@@ -303,112 +301,97 @@ lvim.plugins = {
     "neovim/nvim-lspconfig",
     config = function()
       local lspconfig = require("lspconfig")
+      -- IMPORTANT: We get capabilities from nvim-cmp now
       local capabilities = require("cmp_nvim_lsp").default_capabilities()
       local util = require("lspconfig.util")
 
-      lspconfig.rust_analyzer.setup({ capabilities = capabilities })
-      lspconfig.clangd.setup({ capabilities = capabilities })
-
-      lspconfig.omnisharp.setup({
+      -- C# LSP Configuration
+      lspconfig.csharp_ls.setup({
         capabilities = capabilities,
-        cmd = { "omnisharp", "--languageserver", "--hostPID", tostring(vim.fn.getpid()) },
-        enable_editorconfig_support = true,
-        enable_ms_build_load_projects_on_demand = false,
-        enable_roslyn_analyzers = false,
-        organize_imports_on_format = false,
-        enable_import_completion = false,
-        sdk_include_prereleases = true,
-        analyze_open_documents_only = false,
+        root_dir = util.root_pattern("*.csproj", "*.sln", ".git"),
+        on_attach = function(client, bufnr)
+          vim.bo[bufnr].omnifunc = 'v:lua.vim.lsp.omnifunc'
+          local opts = { buffer = bufnr, noremap = true, silent = true }
+          vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
+          vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
+        end,
       })
 
+      -- Other LSPs
+      lspconfig.rust_analyzer.setup({ capabilities = capabilities })
+      lspconfig.clangd.setup({ capabilities = capabilities })
       lspconfig.tsserver.setup({ capabilities = capabilities })
       lspconfig.pyright.setup({ capabilities = capabilities })
       lspconfig.eslint.setup({ capabilities = capabilities })
-
-      lspconfig.html.setup({
-        capabilities = capabilities,
-        filetypes = { "html", "htmldjango" },
-      })
-      lspconfig.cssls.setup({
-        capabilities = capabilities,
-        filetypes = { "css", "scss", "less" },
-      })
-      lspconfig.tailwindcss.setup({
-        capabilities = capabilities,
-        filetypes = {
-          "html",
-          "javascript",
-          "javascriptreact",
-          "typescript",
-          "typescriptreact",
-          "css",
-          "scss",
-          "svelte",
-        },
-        root_dir = util.root_pattern(
-          "tailwind.config.js",
-          "tailwind.config.cjs",
-          "postcss.config.js",
-          "package.json"
-        ),
-        init_options = {
-          userLanguages = {
-            html = "html",
-            typescript = "typescript",
-            javascript = "javascript",
-          },
-        },
-      })
-
+      lspconfig.html.setup({ capabilities = capabilities })
+      lspconfig.cssls.setup({ capabilities = capabilities })
+      lspconfig.tailwindcss.setup({ capabilities = capabilities })
       lspconfig.jsonls.setup({
         capabilities = capabilities,
-        settings = {
-          json = {
-            schemas = require("schemastore").json.schemas(),
-            validate = { enable = true },
-          },
-        },
+        settings = { json = { schemas = require("schemastore").json.schemas() } },
       })
-
       lspconfig.yamlls.setup({
         capabilities = capabilities,
-        settings = {
-          yaml = {
-            schemaStore = {
-              enable = false,
-              url = "",
-            },
-            schemas = require("schemastore").yaml.schemas(),
-          },
-        },
+        settings = { yaml = { schemas = require("schemastore").yaml.schemas() } },
       })
-
       lspconfig.lua_ls.setup({
         capabilities = capabilities,
-        settings = {
-          Lua = {
-            runtime = { version = "LuaJIT" },
-            diagnostics = { globals = { "vim" } },
-            workspace = { library = vim.api.nvim_get_runtime_file("", true) },
-            telemetry = { enable = false },
-          },
-        },
+        settings = { Lua = { diagnostics = { globals = { "vim" } } } },
       })
-
       lspconfig.bashls.setup({ capabilities = capabilities })
       lspconfig.dockerls.setup({ capabilities = capabilities })
       lspconfig.marksman.setup({ capabilities = capabilities })
       lspconfig.taplo.setup({ capabilities = capabilities })
+      lspconfig.cmake.setup({ capabilities = capabilities })
+    end,
+  },
 
-      lspconfig.cmake.setup({
-        capabilities = capabilities,
-        filetypes = { "cmake" },
-        init_options = {
-          buildDirectory = "build",
+  ------------------------------------------------------------------
+  -- COMPLETION ENGINE (FIX FOR C# AUTOCOMPLETE)
+  ------------------------------------------------------------------
+  {
+    "hrsh7th/nvim-cmp",
+    event = "InsertEnter",
+    dependencies = {
+      "hrsh7th/cmp-nvim-lsp",
+      "hrsh7th/cmp-buffer",
+      "hrsh7th/cmp-path",
+      "saadparwaiz1/cmp_luasnip", -- Bridge for luasnip
+    },
+    config = function()
+      local cmp = require("cmp")
+      local luasnip = require("luasnip")
+      require("luasnip.loaders.from_vscode").lazy_load()
+      luasnip.config.setup({})
+
+      cmp.setup({
+        snippet = {
+          expand = function(args)
+            luasnip.lsp_expand(args.body)
+          end,
         },
+        mapping = cmp.mapping.preset.insert({
+          ["<C-k>"] = cmp.mapping.select_prev_item(),
+          ["<C-j>"] = cmp.mapping.select_next_item(),
+          ["<C-Space>"] = cmp.mapping.complete(),
+          ["<C-e>"] = cmp.mapping.abort(),
+          ["<CR>"] = cmp.mapping.confirm({ select = true }),
+        }),
+        sources = cmp.config.sources({
+          { name = "nvim_lsp" },
+          { name = "luasnip" },
+          { name = "buffer" },
+          { name = "path" },
+        }),
       })
     end,
   },
+  -- This plugin must be listed separately to be installed by the plugin manager
+  { "saadparwaiz1/cmp_luasnip" },
+
+  ------------------------------------------------------------------
+  -- TREESITTER (SYNTAX HIGHLIGHTING AND MORE)
+  ------------------------------------------------------------------
   {
     "windwp/nvim-ts-autotag",
     config = function()
@@ -421,35 +404,11 @@ lvim.plugins = {
     config = function()
       require("nvim-treesitter.configs").setup({
         ensure_installed = {
-          "html",
-          "css",
-          "javascript",
-          "typescript",
-          "tsx",
-          "json",
-          "yaml",
-          "toml",
-          "c_sharp",
-          "c",
-          "cpp",
-          "rust",
-          "python",
-          "lua",
-          "bash",
-          "markdown",
-          "markdown_inline",
-          "dockerfile",
-          "cmake",
-          "make",
-          "vim",
-          "vimdoc",
-          "sql",
-          "regex",
+          "html", "css", "javascript", "typescript", "tsx", "json", "yaml", "toml",
+          "c_sharp", "c", "cpp", "rust", "python", "lua", "bash", "markdown",
+          "markdown_inline", "dockerfile", "cmake", "make", "vim", "vimdoc", "sql", "regex",
         },
-        highlight = {
-          enable = true,
-          additional_vim_regex_highlighting = false,
-        },
+        highlight = { enable = true },
         indent = { enable = true },
         incremental_selection = {
           enable = true,
@@ -463,25 +422,15 @@ lvim.plugins = {
       })
     end,
   },
+
+  ------------------------------------------------------------------
+  -- OTHER TOOLS
+  ------------------------------------------------------------------
   {
     "Civitasv/cmake-tools.nvim",
     dependencies = { "nvim-lua/plenary.nvim" },
     config = function()
-      require("cmake-tools").setup({
-        cmake_command = "cmake",
-        cmake_build_directory = "build",
-        cmake_build_directory_prefix = "",
-        cmake_generate_options = { "-DCMAKE_EXPORT_COMPILE_COMMANDS=1" },
-        cmake_build_options = {},
-        cmake_console_position = "belowright",
-        cmake_console_size = 10,
-        cmake_show_console = "always",
-        cmake_dap_configuration = {
-          name = "cpp",
-          type = "codelldb",
-          request = "launch",
-        },
-      })
+      require("cmake-tools").setup({})
     end,
   },
   {
