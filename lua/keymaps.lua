@@ -45,27 +45,38 @@ lvim.keys.normal_mode["<leader>lg"] = "<cmd>LazyGit<CR>"
 lvim.builtin.terminal.active = true
 lvim.builtin.terminal.open_mapping = "<leader>tt"
 
--- Neotree mappings
+-- NvimTree mappings
 lvim.keys.normal_mode["<C-t>"] = ":NvimTreeToggle<CR>"
--- vim.api.nvim_create_autocmd("BufEnter", {
---   callback = function()
---     -- Get the list of current windows.
---     if #vim.api.nvim_list_wins() == 1 then
---       -- Check if the current buffer's filetype is neo-tree.
---       if vim.bo.filetype == "neo-tree" then
---         vim.cmd("quit")
---       end
---     end
---   end,
--- })
 
 -- Go to Definition and Go to Implementation
 lvim.keys.normal_mode["gd"] = "<cmd>lua vim.lsp.buf.definition()<CR>"
 lvim.keys.normal_mode["gI"] = "<cmd>lua vim.lsp.buf.implementation()<CR>"
 
--- format on save
+-- Format on save
 vim.api.nvim_create_autocmd("BufWritePre", {
-  pattern = { "*.rs", "*.c", "*.cpp", "*.cs", "*.ts", "*.tsx", "*.js", "*.jsx", "*.py", "*.lua", "*.hpp", "*.h" },
+  pattern = {
+    "*.rs", "*.c", "*.cpp", "*.cs", "*.ts", "*.tsx", "*.js", "*.jsx", "*.py", "*.lua", "*.hpp", "*.h",
+    "*.json",
+    "*.yaml", "*.yml",
+    "*.toml",
+    "*.sh", "*.bash",
+    "*.html",
+    "*.css", "*.scss",
+    "*.md",
+    "*.cmake",
+    "CMakeLists.txt",
+    "Makefile",
+    "*.make",
+    "Dockerfile",
+    "*.dockerfile",
+    "*.go",
+    "*.java",
+    "*.php",
+    "*.rb",
+    "*.vim",
+    "*.xml",
+    "*.svg",
+  },
   callback = function()
     vim.lsp.buf.format({ async = false })
     print("File formatted and saved!")
