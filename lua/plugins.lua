@@ -176,12 +176,9 @@ lvim.plugins = {
   {
     "kdheepak/lazygit.nvim",
     dependencies = { "nvim-lua/plenary.nvim" },
-    -- Lazy-load on command or keymap for faster startup
     cmd = "LazyGit",
     keys = { { "<leader>gg" } },
     config = function()
-      -- Keymaps are all you need. The defaults are great.
-      -- vim.keymap.set('n', '<leader>wg', '<cmd>LazyGit<cr>', { desc = 'LazyGit' })
       vim.keymap.set('n', '<leader>gg', '<cmd>LazyGit<cr>', { desc = 'LazyGit' })
     end,
   },
@@ -251,7 +248,7 @@ lvim.plugins = {
     config = function()
       require("mason-lspconfig").setup({
         ensure_installed = {
-          "rust_analyzer", "clangd", "csharp_ls", "tsserver", "pyright",
+          "rust_analyzer", "clangd", "tsserver", "pyright",
           "eslint", "html", "cssls", "tailwindcss", "jsonls", "yamlls",
           "lua_ls", "bashls", "dockerls", "marksman", "taplo", "cmake",
         },
@@ -278,7 +275,6 @@ lvim.plugins = {
             end,
           }),
           null_ls.builtins.code_actions.eslint_d,
-          null_ls.builtins.formatting.csharpier,
           null_ls.builtins.formatting.black,
           null_ls.builtins.formatting.isort,
           null_ls.builtins.formatting.rustfmt,
@@ -301,23 +297,9 @@ lvim.plugins = {
     "neovim/nvim-lspconfig",
     config = function()
       local lspconfig = require("lspconfig")
-      -- IMPORTANT: We get capabilities from nvim-cmp now
       local capabilities = require("cmp_nvim_lsp").default_capabilities()
-      local util = require("lspconfig.util")
 
-      -- C# LSP Configuration
-      lspconfig.csharp_ls.setup({
-        capabilities = capabilities,
-        root_dir = util.root_pattern("*.csproj", "*.sln", ".git"),
-        on_attach = function(client, bufnr)
-          vim.bo[bufnr].omnifunc = 'v:lua.vim.lsp.omnifunc'
-          local opts = { buffer = bufnr, noremap = true, silent = true }
-          vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
-          vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
-        end,
-      })
-
-      -- Other LSPs
+      -- Non-C# LSPs only
       lspconfig.rust_analyzer.setup({ capabilities = capabilities })
       lspconfig.clangd.setup({ capabilities = capabilities })
       lspconfig.tsserver.setup({ capabilities = capabilities })
@@ -347,7 +329,7 @@ lvim.plugins = {
   },
 
   ------------------------------------------------------------------
-  -- COMPLETION ENGINE (FIX FOR C# AUTOCOMPLETE)
+  -- COMPLETION ENGINE
   ------------------------------------------------------------------
   {
     "hrsh7th/nvim-cmp",
@@ -356,7 +338,7 @@ lvim.plugins = {
       "hrsh7th/cmp-nvim-lsp",
       "hrsh7th/cmp-buffer",
       "hrsh7th/cmp-path",
-      "saadparwaiz1/cmp_luasnip", -- Bridge for luasnip
+      "saadparwaiz1/cmp_luasnip",
     },
     config = function()
       local cmp = require("cmp")
@@ -386,7 +368,6 @@ lvim.plugins = {
       })
     end,
   },
-  -- This plugin must be listed separately to be installed by the plugin manager
   { "saadparwaiz1/cmp_luasnip" },
 
   ------------------------------------------------------------------
@@ -405,7 +386,7 @@ lvim.plugins = {
       require("nvim-treesitter.configs").setup({
         ensure_installed = {
           "html", "css", "javascript", "typescript", "tsx", "json", "yaml", "toml",
-          "c_sharp", "c", "cpp", "rust", "python", "lua", "bash", "markdown",
+          "c", "cpp", "rust", "python", "lua", "bash", "markdown",
           "markdown_inline", "dockerfile", "cmake", "make", "vim", "vimdoc", "sql", "regex",
         },
         highlight = { enable = true },
@@ -441,3 +422,4 @@ lvim.plugins = {
     end,
   },
 }
+
