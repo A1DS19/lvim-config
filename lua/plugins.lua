@@ -17,8 +17,8 @@ lvim.plugins = {
     priority = 1000,
     config = function()
       require("dracula").setup({
-        transparent_bg = false,   -- Enable/disable transparent background
-        italic_comments = true,   -- Enable italic comments
+        transparent_bg = false,      -- Enable/disable transparent background
+        italic_comments = true,      -- Enable italic comments
       })
       vim.cmd("colorscheme dracula") -- Set the colorscheme to Dracula
     end,
@@ -189,15 +189,15 @@ lvim.plugins = {
         hijack_netrw = true,
 
         -- Don’t update CWD or focus file automatically
-        update_cwd = false, -- Prevent :cd on BufEnter
+        update_cwd = false,   -- Prevent :cd on BufEnter
         update_focused_file = {
-          enable = false, -- Don’t focus the file in the tree
+          enable = false,     -- Don’t focus the file in the tree
           update_cwd = false, -- Don’t change root on focus
         },
 
         -- View options
         view = {
-          width = 30,
+          width = 35,
           side = "left",
           number = false,
           relativenumber = false,
@@ -207,6 +207,10 @@ lvim.plugins = {
         filters = {
           dotfiles = false,
           custom = {},
+        },
+
+        git = {
+          ignore = false,
         },
 
         -- Actions on open
@@ -289,14 +293,14 @@ lvim.plugins = {
       require("mason-lspconfig").setup({
         ensure_installed = {
           "rust_analyzer", -- Rust
-          "clangd",   -- C/C++
-          "csharp_ls", -- C#
-          "tsserver", -- TypeScript/JavaScript
-          "pyright",  -- Python
-          "eslint",   -- ESLint for React/JS/TS
-          "html",     -- HTML
-          "cssls",    -- CSS
-          "tailwindcss", -- Tailwind CSS
+          "clangd",        -- C/C++
+          "csharp_ls",     -- C#
+          "tsserver",      -- TypeScript/JavaScript
+          "pyright",       -- Python
+          "eslint",        -- ESLint for React/JS/TS
+          "html",          -- HTML
+          "cssls",         -- CSS
+          "tailwindcss",   -- Tailwind CSS
         },
       })
     end,
