@@ -171,61 +171,6 @@ lvim.plugins = {
     dependencies = { "nvim-lua/plenary.nvim" },
   },
   {
-    "kdheepak/lazygit.nvim",
-    lazy = false,
-    cmd = {
-      "LazyGit",
-      "LazyGitConfig",
-      "LazyGitCurrentFile",
-      "LazyGitFilter",
-      "LazyGitFilterCurrentFile",
-    },
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-    },
-    keys = {
-      {
-        "<leader>lg",
-        function()
-          -- Add error checking
-          if vim.fn.executable('git') == 0 then
-            vim.notify('Git is not installed or not in PATH', vim.log.levels.ERROR)
-            return
-          end
-          if vim.fn.executable('lazygit') == 0 then
-            vim.notify('LazyGit is not installed or not in PATH', vim.log.levels.ERROR)
-            return
-          end
-          vim.cmd('LazyGit')
-        end,
-        desc = "Open LazyGit"
-      },
-      {
-        "<leader>gg",
-        function()
-          -- Add error checking
-          if vim.fn.executable('git') == 0 then
-            vim.notify('Git is not installed or not in PATH', vim.log.levels.ERROR)
-            return
-          end
-          if vim.fn.executable('lazygit') == 0 then
-            vim.notify('LazyGit is not installed or not in PATH', vim.log.levels.ERROR)
-            return
-          end
-          vim.cmd('LazyGit')
-        end,
-        desc = "Open LazyGit"
-      },
-    },
-    config = function()
-      vim.g.lazygit_floating_window_winblend = 0
-      vim.g.lazygit_floating_window_scaling_factor = 0.9
-      vim.g.lazygit_floating_window_border_chars = { '╭', '─', '╮', '│', '╯', '─', '╰', '│' }
-      vim.g.lazygit_floating_window_use_plenary = 1
-      vim.g.lazygit_use_neovim_remote = 1
-    end,
-  },
-  {
     "nvim-tree/nvim-tree.lua",
     version = "*",
     dependencies = { "nvim-tree/nvim-web-devicons" },

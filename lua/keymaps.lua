@@ -38,9 +38,6 @@ lvim.builtin.which_key.mappings["f"] = {
 
 lvim.builtin.which_key.mappings["e"] = { "<cmd>Telescope file_browser<CR>", "File Browser" }
 
--- LazyGit
-lvim.keys.normal_mode["<leader>lg"] = "<cmd>LazyGit<CR>"
-
 -- Terminal
 lvim.builtin.terminal.active = true
 lvim.builtin.terminal.open_mapping = "<leader>tt"
