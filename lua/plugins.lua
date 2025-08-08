@@ -253,7 +253,7 @@ lvim.plugins = {
           "rust_analyzer", "clangd", "tsserver", "pyright",
           "eslint", "html", "cssls", "tailwindcss", "jsonls", "yamlls",
           "lua_ls", "bashls", "dockerls", "marksman", "taplo", "cmake",
-          "omnisharp"
+          "omnisharp", "glsl_analyzer"
         },
       })
     end,
@@ -267,13 +267,13 @@ lvim.plugins = {
           null_ls.builtins.formatting.prettier.with({
             filetypes = {
               "javascript", "typescript", "javascriptreact", "typescriptreact",
-              "json", "html", "css", "scss", "markdown", "yaml",
+              "json", "html", "css", "scss", "markdown", "yaml", "glsl"
             },
           }),
           null_ls.builtins.formatting.eslint_d.with({
             condition = function(utils)
               return utils.root_has_file({
-                ".eslintrc.js", ".eslintrc.cjs", ".eslintrc.json", "package.json",
+                ".eslintrc.js", ".eslintrc.cjs", ".eslintrc.json", "package.json", "turbo.json"
               })
             end,
           }),
@@ -354,7 +354,37 @@ lvim.plugins = {
 
       -- Your other LSPs
       lspconfig.rust_analyzer.setup({ capabilities = capabilities })
-      lspconfig.clangd.setup({ capabilities = capabilities })
+      lspconfig.clangd.setup({
+        capabilities = capabilities,
+        cmd = {
+          "clangd",
+          "--background-index",
+          "--clang-tidy",
+          "--header-insertion=iwyu",
+          "--completion-style=detailed",
+          "--function-arg-placeholders",
+          "--fallback-style=llvm",
+          "--compile-commands-dir=build",
+          "--pch-storage=memory",
+          "--offset-encoding=utf-16",
+        },
+        init_options = {
+          usePlaceholders = true,
+          completeUnimported = true,
+          clangdFileStatus = true,
+        },
+        settings = {
+          clangd = {
+            InlayHints = {
+              Designators = true,
+              Enabled = true,
+              ParameterNames = true,
+              DeducedTypes = true,
+            },
+            fallbackFlags = { "-std=c++23" },
+          }
+        }
+      })
       lspconfig.tsserver.setup({ capabilities = capabilities })
       lspconfig.pyright.setup({ capabilities = capabilities })
       lspconfig.eslint.setup({ capabilities = capabilities })
@@ -383,6 +413,7 @@ lvim.plugins = {
       lspconfig.marksman.setup({ capabilities = capabilities })
       lspconfig.taplo.setup({ capabilities = capabilities })
       lspconfig.cmake.setup({ capabilities = capabilities })
+      lspconfig.glsl_analyzer.setup({ capabilities = capabilities })
 
       -- Auto hover on cursor hold
       vim.o.updatetime = 500
@@ -456,7 +487,7 @@ lvim.plugins = {
         ensure_installed = {
           "html", "css", "javascript", "typescript", "tsx", "json", "yaml", "toml",
           "c", "cpp", "rust", "python", "lua", "bash", "markdown",
-          "markdown_inline", "dockerfile", "cmake", "make", "vim", "vimdoc", "sql", "regex",
+          "markdown_inline", "dockerfile", "cmake", "make", "vim", "vimdoc", "sql", "regex", "glsl"
         },
         highlight = { enable = true },
         indent = { enable = true },
@@ -480,7 +511,60 @@ lvim.plugins = {
     "Civitasv/cmake-tools.nvim",
     dependencies = { "nvim-lua/plenary.nvim" },
     config = function()
-      require("cmake-tools").setup({})
+      require("cmake-tools").setup({
+        cmake_command = "cmake",
+        cmake_regenerate_on_save = true,
+        cmake_generate_options = { "-DCMAKE_EXPORT_COMPILE_COMMANDS=1" },
+        cmake_build_options = {},
+        cmake_build_directory = "build/${variant:buildType}",
+        cmake_soft_link_compile_commands = true,
+        cmake_compile_commands_from_lsp = false,
+        cmake_kits_path = nil,
+        cmake_variants_message = {
+          short = { show = true },
+          long = { show = true, max_length = 40 }
+        },
+        cmake_dap_configuration = {
+          name = "cpp",
+          type = "codelldb",
+          request = "launch",
+          stopOnEntry = false,
+          runInTerminal = true,
+          console = "integratedTerminal",
+        },
+        cmake_executor = {
+          name = "quickfix",
+          opts = {},
+          default_opts = {
+            quickfix = {
+              show = "always",
+              position = "belowright",
+              size = 10,
+              encoding = "utf-8",
+              auto_close_when_success = true,
+            },
+          }
+        },
+        cmake_runner = {
+          name = "terminal",
+          opts = {},
+          default_opts = {
+            quickfix = {
+              show = "always",
+              position = "belowright",
+              size = 10,
+              encoding = "utf-8",
+              auto_close_when_success = true,
+            },
+            terminal = {
+              name = "Main Terminal",
+              prefix_name = "[CMakeTools]: ",
+              split_direction = "horizontal",
+              split_size = 11,
+            }
+          }
+        }
+      })
     end,
   },
   {

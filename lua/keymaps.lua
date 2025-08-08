@@ -6,6 +6,11 @@ lvim.keys.normal_mode["<leader>fh"] = "<cmd>Telescope help_tags<CR>"
 lvim.keys.normal_mode["<leader>bd"] = "<cmd>bd<CR>"
 lvim.keys.normal_mode["<leader>bn"] = "<cmd>bn<CR>"
 lvim.keys.normal_mode["<leader>bp"] = "<cmd>bp<CR>"
+lvim.keys.normal_mode["<leader>fgf"] = function()
+  require('telescope.builtin').live_grep({
+    search_dirs = { vim.fn.expand('%:p') }
+  })
+end
 
 -- File Browser
 lvim.keys.normal_mode["<leader>e"] = "<cmd>Telescope file_browser path=%:p:h select_buffer=true<CR>"
@@ -73,6 +78,9 @@ vim.api.nvim_create_autocmd("BufWritePre", {
     "*.vim",
     "*.xml",
     "*.svg",
+    "*.vert",
+    "*.frag",
+    "*.glsl"
   },
   callback = function()
     vim.lsp.buf.format({ async = false })
